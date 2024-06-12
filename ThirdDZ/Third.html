@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript Tasks</title>
+    <script>
+
+        let start = parseInt(prompt("Введіть початок діапазону:"));
+        let end = parseInt(prompt("Введіть кінець діапазону:"));
+        let sum = 0;
+        for (let i = start; i <= end; i++) {
+            sum += i;
+        }
+        alert(`Сума всіх чисел у діапазоні: ${sum}`);
+
+
+        let num1 = parseInt(prompt("Введіть перше число:"));
+        let num2 = parseInt(prompt("Введіть друге число:"));
+        while (num1 !== num2) {
+            if (num1 > num2) {
+                num1 -= num2;
+            } else {
+                num2 -= num1;
+            }
+        }
+        alert(`Найбільший спільний дільник: ${num1}`);
+
+
+        let number = parseInt(prompt("Введіть число:"));
+        let divisors = "";
+        for (let i = 1; i <= number; i++) {
+            if (number % i === 0) {
+                divisors += i + " ";
+            }
+        }
+        alert(`Дільники числа: ${divisors}`);
+
+
+        let inputNumber = prompt("Введіть число:");
+        alert(`Кількість цифр у числі: ${inputNumber.length}`);
+
+
+        let positiveCount = 0;
+        let negativeCount = 0;
+        let zeroCount = 0;
+        let evenCount = 0;
+        let oddCount = 0;
+        for (let i = 0; i < 10; i++) {
+            let userNumber = parseInt(prompt("Введіть число:"));
+            if (userNumber > 0) {
+                positiveCount++;
+            } else if (userNumber < 0) {
+                negativeCount++;
+            } else {
+                zeroCount++;
+            }
+            if (userNumber % 2 === 0) {
+                evenCount++;
+            } else {
+                oddCount++;
+            }
+        }
+        alert(`Позитивних: ${positiveCount}, Негативних: ${negativeCount}, Нулів: ${zeroCount}, Парних: ${evenCount}, Непарних: ${oddCount}`);
+
+
+        do {
+            let num1 = parseFloat(prompt("Введіть перше число:"));
+            let num2 = parseFloat(prompt("Введіть друге число:"));
+            let operator = prompt("Введіть знак операції (+, -, *, /):");
+            let result;
+            switch (operator) {
+                case '+': result = num1 + num2; break;
+                case '-': result = num1 - num2; break;
+                case '*': result = num1 * num2; break;
+                case '/': result = num1 / num2; break;
+                default: result = "Некоректний оператор"; break;
+            }
+            alert(`Результат: ${result}`);
+        } while (confirm("Бажаєте вирішити ще один приклад?"));
+
+
+        let shiftNumber = prompt("Введіть число:");
+        let shift = parseInt(prompt("На скільки цифр його зсунути?"));
+        let shiftedNumber = shiftNumber.slice(shift) + shiftNumber.slice(0, shift);
+        alert(`Результат зсуву: ${shiftedNumber}`);
+
+
+        const daysOfWeek = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота", "Неділя"];
+        let dayIndex = 0;
+        do {
+            alert(`День тижня: ${daysOfWeek[dayIndex]}`);
+            dayIndex = (dayIndex + 1) % 7;
+        } while (confirm("Бажаєте побачити наступний день?"));
+
+
+        for (let i = 2; i <= 9; i++) {
+            for (let j = 1; j <= 10; j++) {
+                console.log(`${i} * ${j} = ${i * j}`);
+            }
+        }
+
+
+        let min = 0;
+        let max = 100;
+        let guess;
+        do {
+            guess = Math.floor((min + max) / 2);
+            let answer = prompt(`Ваше число > ${guess}, < ${guess} або == ${guess}?  (вводити > < ==)`);
+            if (answer === '>') {
+                min = guess + 1;
+            } else if (answer === '<') {
+                max = guess - 1;
+            } else if (answer === '==') {
+                alert(`Число вгадане: ${guess}`);
+                break;
+            }
+        } while (true);
+    </script>
+</head>
+<body>
+</body>
+</html>
