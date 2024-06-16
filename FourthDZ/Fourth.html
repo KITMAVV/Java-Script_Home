@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript Functions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: radial-gradient(circle, #303030, #000);
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 600px;
+            filter: none;
+            transition: filter 0.8s;
+        }
+        .blur .container {
+            filter: blur(5px);
+        }
+        button {
+            margin: 10px;
+            padding: 20px 40px;
+            background-color: #000;
+            border: 1px solid #888;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            flex: 1 0 40%;
+            box-sizing: border-box;
+            transition: background-color 0.5s, border-color 0.5s, box-shadow 0.5s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background-color: #333;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        button:active {
+            background-color: #555;
+            border-color: #4286f5;
+        }
+        .disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 400px;
+            background-color: #333;
+            border: 2px solid white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: top 0.5s ease-in-out, transform 0.5s ease-in-out;
+            overflow-y: auto;
+        }
+        .modal.show {
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        .modal .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            height: 12px;
+            padding: 0;
+        }
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .modal-content label {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .modal-content input {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 80%;
+            border-radius: 5px;
+            border: none;
+        }
+        .modal-content button {
+            background-color: #000;
+            border: 1px solid #888;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            padding: 5px 20px;
+            width: 370px;
+            max-height: 30px;
+            transition: background-color 0.5s, border-color 0.5s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .modal-content button:hover {
+            background-color: #333;
+        }
+        .modal-content button:active {
+            background-color: #555;
+            border-color: #4286f5;
+        }
+        .modal::-webkit-scrollbar {
+            width: 8px;
+        }
+        .modal::-webkit-scrollbar-track {
+            background: #333;
+            border-radius: 10px;
+        }
+        .modal::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <button onclick="openModal('modal1')"> Порівняння двох чисел</button>
+    <button onclick="openModal('modal2')"> Обчислення факторіалу</button>
+    <button onclick="openModal('modal3')"> Перетворення трьох цифр в одне число</button>
+    <button onclick="openModal('modal4')"> Обчислення площі прямокутника або квадрата</button>
+    <button onclick="openModal('modal5')"> Перевірка числа на досконалість</button>
+    <button onclick="openModal('modal6')"> Виведення досконалих чисел з діапазону</button>
+    <button onclick="openModal('modal7')"> Виведення часу у форматі чч:мм:сс</button>
+    <button onclick="openModal('modal8')"> Перетворення часу в секунди</button>
+    <button onclick="openModal('modal9')"> Перетворення секунд в чч:мм:сс</button>
+    <button onclick="openModal('modal10')"> Різниця між датами</button>
+</div>
+
+<div id="modal1" class="modal">
+    <button class="close" onclick="closeModal('modal1')">&times;</button>
+    <div class="modal-content">
+        <label for="num1">Введіть перше число:</label>
+        <input type="number" id="num1">
+        <label for="num2">Введіть друге число:</label>
+        <input type="number" id="num2">
+        <button onclick="task1()">Порівняти</button>
+    </div>
+</div>
+
+<div id="modal2" class="modal">
+    <button class="close" onclick="closeModal('modal2')">&times;</button>
+    <div class="modal-content">
+        <label for="factorialNum">Введіть число:</label>
+        <input type="number" id="factorialNum">
+        <button onclick="task2()">Обчислити факторіал</button>
+    </div>
+</div>
+
+<div id="modal3" class="modal">
+    <button class="close" onclick="closeModal('modal3')">&times;</button>
+    <div class="modal-content">
+        <label for="digit1">Введіть першу цифру:</label>
+        <input type="text" id="digit1">
+        <label for="digit2">Введіть другу цифру:</label>
+        <input type="text" id="digit2">
+        <label for="digit3">Введіть третю цифру:</label>
+        <input type="text" id="digit3">
+        <button onclick="task3()">Перетворити</button>
+    </div>
+</div>
+
+<div id="modal4" class="modal">
+    <button class="close" onclick="closeModal('modal4')">&times;</button>
+    <div class="modal-content">
+        <label for="length">Введіть довжину:</label>
+        <input type="number" id="length">
+        <label for="width">Введіть ширину (або залиште порожнім для квадрата):</label>
+        <input type="number" id="width">
+        <button onclick="task4()">Обчислити площу</button>
+    </div>
+</div>
+
+<div id="modal5" class="modal">
+    <button class="close" onclick="closeModal('modal5')">&times;</button>
+    <div class="modal-content">
+        <label for="perfectNum">Введіть число:</label>
+        <input type="number" id="perfectNum">
+        <button onclick="task5()">Перевірити</button>
+    </div>
+</div>
+
+<div id="modal6" class="modal">
+    <button class="close" onclick="closeModal('modal6')">&times;</button>
+    <div class="modal-content">
+        <label for="min">Введіть мінімальне значення діапазону:</label>
+        <input type="number" id="min">
+        <label for="max">Введіть максимальне значення діапазону:</label>
+        <input type="number" id="max">
+        <button onclick="task6()">Вивести досконалі числа</button>
+    </div>
+</div>
+
+<div id="modal7" class="modal">
+    <button class="close" onclick="closeModal('modal7')">&times;</button>
+    <div class="modal-content">
+        <label for="hours">Введіть години:</label>
+        <input type="number" id="hours">
+        <label for="minutes">Введіть хвилини:</label>
+        <input type="number" id="minutes">
+        <label for="seconds">Введіть секунди:</label>
+        <input type="number" id="seconds">
+        <button onclick="task7()">Вивести час</button>
+    </div>
+</div>
+
+<div id="modal8" class="modal">
+    <button class="close" onclick="closeModal('modal8')">&times;</button>
+    <div class="modal-content">
+        <label for="hoursToSec">Введіть години:</label>
+        <input type="number" id="hoursToSec">
+        <label for="minutesToSec">Введіть хвилини:</label>
+        <input type="number" id="minutesToSec">
+        <label for="secondsToSec">Введіть секунди:</label>
+        <input type="number" id="secondsToSec">
+        <button onclick="task8()">Перетворити в секунди</button>
+    </div>
+</div>
+
+<div id="modal9" class="modal">
+    <button class="close" onclick="closeModal('modal9')">&times;</button>
+    <div class="modal-content">
+        <label for="totalSeconds">Введіть кількість секунд:</label>
+        <input type="number" id="totalSeconds">
+        <button onclick="task9()">Перетворити</button>
+    </div>
+</div>
+
+<div id="modal10" class="modal">
+    <button class="close" onclick="closeModal('modal10')">&times;</button>
+    <div class="modal-content">
+        <label for="date1">Введіть першу дату:</label>
+        <input type="date" id="date1">
+        <label for="date2">Введіть другу дату:</label>
+        <input type="date" id="date2">
+        <button onclick="task10()">Обчислити різницю</button>
+    </div>
+</div>
+
+<script>
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.style.display = 'block';
+        setTimeout(() => {
+            modal.classList.add('show');
+            document.body.classList.add('blur');
+            disableButtons();
+        }, 10);
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.remove('show');
+        document.body.classList.remove('blur');
+        enableButtons();
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 500);
+    }
+
+    function disableButtons() {
+        const buttons = document.querySelectorAll('.container button');
+        buttons.forEach(button => {
+            button.classList.add('disabled');
+        });
+    }
+
+    function enableButtons() {
+        const buttons = document.querySelectorAll('.container button');
+        buttons.forEach(button => {
+            button.classList.remove('disabled');
+        });
+    }
+
+    function task1() {
+        const num1 = parseInt(document.getElementById('num1').value);
+        const num2 = parseInt(document.getElementById('num2').value);
+        const result = num1 < num2 ? -1 : num1 > num2 ? 1 : 0;
+        alert(`Результат: ${result}`);
+    }
+
+    function task2() {
+        const num = parseInt(document.getElementById('factorialNum').value);
+        let factorial = 1;
+        for (let i = 1; i <= num; i++) {
+            factorial *= i;
+        }
+        alert('Факторіал числа ' + num + ' дорівнює ' + factorial);
+    }
+
+    function task3() {
+        const digit1 = document.getElementById('digit1').value;
+        const digit2 = document.getElementById('digit2').value;
+        const digit3 = document.getElementById('digit3').value;
+        const number = parseInt(digit1 + digit2 + digit3);
+        alert('Складене число: ' + number);
+    }
+
+    function task4() {
+        const length = parseFloat(document.getElementById('length').value);
+        const width = parseFloat(document.getElementById('width').value);
+        const area = width ? length * width : length * length;
+        alert('Площа ' + (width ? 'прямокутника' : 'квадрата') + ' дорівнює ' + area);
+    }
+
+    function task5() {
+        const num = parseInt(document.getElementById('perfectNum').value);
+        let sum = 0;
+        for (let i = 1; i < num; i++) {
+            if (num % i === 0) {
+                sum += i;
+            }
+        }
+        if (sum === num) {
+            alert(num + ' є досконалим числом');
+        } else {
+            alert(num + ' не є досконалим числом');
+        }
+    }
+
+    function task6() {
+        const min = parseInt(document.getElementById('min').value);
+        const max = parseInt(document.getElementById('max').value);
+        let perfectNumbers = '';
+        for (let num = min; num <= max; num++) {
+            let sum = 0;
+            for (let i = 1; i < num; i++) {
+                if (num % i === 0) {
+                    sum += i;
+                }
+            }
+            if (sum === num) {
+                perfectNumbers += num + ' ';
+            }
+        }
+        alert('Досконалі числа в діапазоні: ' + perfectNumbers);
+    }
+
+    function task7() {
+        const hours = parseInt(document.getElementById('hours').value);
+        const minutes = parseInt(document.getElementById('minutes').value) || 0;
+        const seconds = parseInt(document.getElementById('seconds').value) || 0;
+        alert(`Час: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+    }
+
+    function task8() {
+        const hours = parseInt(document.getElementById('hoursToSec').value);
+        const minutes = parseInt(document.getElementById('minutesToSec').value);
+        const seconds = parseInt(document.getElementById('secondsToSec').value);
+        const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+        alert('Час у секундах: ' + totalSeconds);
+    }
+
+    function task9() {
+        const totalSeconds = parseInt(document.getElementById('totalSeconds').value);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        alert('Час: ' + String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0'));
+    }
+
+    function task10() {
+        const date1 = new Date(document.getElementById('date1').value);
+        const date2 = new Date(document.getElementById('date2').value);
+        const differenceInTime = Math.abs(date2 - date1);
+        const differenceInDays = Math.ceil(differenceInTime / (1000 * 60 * 60 * 24));  //Наче так теж працює
+        alert('Різниця між датами: ' + differenceInDays + ' днів');
+    }
+</script>
+</body>
+</html>
