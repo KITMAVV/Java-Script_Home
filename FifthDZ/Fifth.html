@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript Functions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: radial-gradient(circle, #303030, #000);
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 600px;
+            filter: none;
+            transition: filter 0.8s;
+        }
+        .blur .container {
+            filter: blur(5px);
+        }
+        button {
+            margin: 10px;
+            padding: 20px 40px;
+            background-color: #000;
+            border: 1px solid #888;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            flex: 1 0 40%;
+            box-sizing: border-box;
+            transition: background-color 0.5s, border-color 0.5s, box-shadow 0.5s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background-color: #333;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        button:active {
+            background-color: #555;
+            border-color: #4286f5;
+        }
+        .disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 400px;
+            background-color: #333;
+            border: 2px solid white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: top 0.5s ease-in-out, transform 0.5s ease-in-out;
+            overflow-y: auto;
+        }
+        .modal.show {
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        .modal .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            height: 12px;
+            padding: 0;
+        }
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .modal-content label {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .modal-content input {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 80%;
+            border-radius: 5px;
+            border: none;
+        }
+        .modal-content button {
+            background-color: #000;
+            border: 1px solid #888;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            padding: 5px 20px;
+            width: 370px;
+            max-height: 30px;
+            transition: background-color 0.5s, border-color 0.5s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .modal-content button:hover {
+            background-color: #333;
+        }
+        .modal-content button:active {
+            background-color: #555;
+            border-color: #4286f5;
+        }
+        .modal::-webkit-scrollbar {
+            width: 8px;
+        }
+        .modal::-webkit-scrollbar-track {
+            background: #333;
+            border-radius: 10px;
+        }
+        .modal::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <button onclick="openModal('powerModal')"> Піднести до степеня</button>
+    <button onclick="openModal('gcdModal')"> Найбільший спільний дільник</button>
+    <button onclick="openModal('maxDigitModal')"> Максимальна цифра в числі</button>
+    <button onclick="openModal('primeModal')"> Перевірка на простоту</button>
+    <button onclick="openModal('primeFactorsModal')"> Вивести всі множники числа</button>
+    <button onclick="openModal('fibonacciModal')"> Число Фибоначчи</button>
+</div>
+
+<div id="powerModal" class="modal">
+    <button class="close" onclick="closeModal('powerModal')">&times;</button>
+    <div class="modal-content">
+        <label for="base">Введіть основу:</label>
+        <input type="number" id="base">
+        <label for="exponent">Введіть степінь:</label>
+        <input type="number" id="exponent">
+        <button onclick="powerTask()">Піднести</button>
+    </div>
+</div>
+
+<div id="gcdModal" class="modal">
+    <button class="close" onclick="closeModal('gcdModal')">&times;</button>
+    <div class="modal-content">
+        <label for="num1">Перше число:</label>
+        <input type="number" id="num1">
+        <label for="num2">Друге число:</label>
+        <input type="number" id="num2">
+        <button onclick="gcdTask()">Знайти</button>
+    </div>
+</div>
+
+<div id="maxDigitModal" class="modal">
+    <button class="close" onclick="closeModal('maxDigitModal')">&times;</button>
+    <div class="modal-content">
+        <label for="number">Введіть число:</label>
+        <input type="number" id="number">
+        <button onclick="maxDigitTask()">Максимальна цифра</button>
+    </div>
+</div>
+
+<div id="primeModal" class="modal">
+    <button class="close" onclick="closeModal('primeModal')">&times;</button>
+    <div class="modal-content">
+        <label for="primeNumber">Введіть число:</label>
+        <input type="number" id="primeNumber">
+        <button onclick="primeTask()">Перевірити простоту</button>
+    </div>
+</div>
+
+<div id="primeFactorsModal" class="modal">
+    <button class="close" onclick="closeModal('primeFactorsModal')">&times;</button>
+    <div class="modal-content">
+        <label for="factorNumber">Введіть число:</label>
+        <input type="number" id="factorNumber">
+        <button onclick="primeFactorsTask()">Вивести множники</button>
+    </div>
+</div>
+
+<div id="fibonacciModal" class="modal">
+    <button class="close" onclick="closeModal('fibonacciModal')">&times;</button>
+    <div class="modal-content">
+        <label for="fibNumber">Введіть порядковий номер:</label>
+
+        <input type="number" id="fibNumber">
+        <button onclick="fibonacciTask()">Число Фибоначчи</button>
+    </div>
+</div>
+
+<script>
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.style.display = 'block';
+        setTimeout(() => {
+            modal.classList.add('show');
+            document.body.classList.add('blur');
+            disableButtons();
+        }, 10);
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.remove('show');
+        document.body.classList.remove('blur');
+        enableButtons();
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 500);
+    }
+
+    function disableButtons() {
+        const buttons = document.querySelectorAll('.container button');
+        buttons.forEach(button => {
+            button.classList.add('disabled');
+        });
+    }
+
+    function enableButtons() {
+        const buttons = document.querySelectorAll('.container button');
+        buttons.forEach(button => {
+            button.classList.remove('disabled');
+        });
+    }
+
+    function powerTask() {
+        const base = parseInt(document.getElementById('base').value);
+        const exponent = parseInt(document.getElementById('exponent').value);
+        if (!isNaN(base) && !isNaN(exponent)) {
+            alert(`${base} в степені ${exponent} дорівнює ${power(base, exponent)}`);
+            closeModal('powerModal');
+        } else {
+            alert('Введіть коректне число');
+        }
+    }
+
+    function gcdTask() {
+        const num1 = parseInt(document.getElementById('num1').value);
+        const num2 = parseInt(document.getElementById('num2').value);
+        if (!isNaN(num1) && !isNaN(num2)) {
+            alert(`Найбільший спільний дільник ${num1} і ${num2} дорівнює ${gcd(num1, num2)}`);
+            closeModal('gcdModal');
+        } else {
+            alert('Введіть коректне число');
+        }
+    }
+
+    function maxDigitTask() {
+        const number = parseInt(document.getElementById('number').value);
+        if (!isNaN(number)) {
+            alert(`Максимальна цифра в числі ${number} це ${maxDigit(number)}`);
+            closeModal('maxDigitModal');
+        } else {
+            alert('Введіть коректне число');
+        }
+    }
+
+    function primeTask() {
+        const primeNumber = parseInt(document.getElementById('primeNumber').value);
+        if (!isNaN(primeNumber)) {
+            const isPrimeResult = isPrime(primeNumber);
+            const primeStatus = isPrimeResult ? 'є простим' : 'не є простим';
+            alert(`Число ${primeNumber} ${primeStatus}`);
+            closeModal('primeModal');
+        } else {
+            alert('Введіть коректне число');
+        }
+    }
+
+    function primeFactorsTask() {
+        const factorNumber = parseInt(document.getElementById('factorNumber').value);
+        if (!isNaN(factorNumber)) {
+            const factors = primeFactors(factorNumber);
+            alert(`Множники числа ${factorNumber}: ${factors.join(' * ')}`);
+            closeModal('primeFactorsModal');
+        } else {
+            alert('Введіть коректне число');
+        }
+    }
+
+    function fibonacciTask() {
+        const fibNumber = parseInt(document.getElementById('fibNumber').value);
+        if (!isNaN(fibNumber) && fibNumber > 0) {
+            alert(`Число Фибоначчи з номером ${fibNumber} дорівнює ${fibonacci(fibNumber)}`);
+            closeModal('fibonacciModal');
+        } else {
+            alert('Введіть коректне число');
+        }
+    }
+
+    // Рекурсивные функции
+
+    function power(base, exponent) {
+        if (exponent === 0) {
+            return 1;
+        }
+        return base * power(base, exponent - 1);
+    }
+
+    function gcd(a, b) {
+        if (b === 0) {
+            return a;
+        }
+        return gcd(b, a % b);
+    }
+
+    function maxDigit(num) {
+        if (num < 10) {
+            return num;
+        }
+        return Math.max(num % 10, maxDigit(Math.floor(num / 10)));
+    }
+
+    function isPrime(num, divisor = 2) {
+        if (num <= 2) {
+            return (num === 2);
+        }
+        if (divisor > Math.sqrt(num)) {
+            return true;
+        }
+        if (num % divisor === 0) {
+            return false;
+        }
+        return isPrime(num, divisor + 1);
+    }
+
+    function primeFactors(num, divisor = 2, factors = []) {
+        if (num === 1) {
+            return factors;
+        }
+        if (num % divisor === 0) {
+            factors.push(divisor);
+            return primeFactors(num / divisor, divisor, factors);
+        }
+        return primeFactors(num, divisor + 1, factors);
+    }
+
+    function fibonacci(n) {
+        if (n <= 2) {
+            return 1;
+        }
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+</script>
+</body>
+</html>
