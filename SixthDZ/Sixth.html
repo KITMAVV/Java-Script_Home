@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>JabbaHutt Functions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: radial-gradient(circle, #303030, #000);
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 600px;
+            filter: none;
+            transition: filter 0.8s;
+        }
+        .blur .container {
+            filter: blur(5px);
+        }
+        button {
+            margin: 10px;
+            padding: 20px 40px;
+            background-color: #000;
+            border: 1px solid #888;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            flex: 1 0 40%;
+            box-sizing: border-box;
+            transition: background-color 0.5s, border-color 0.5s, box-shadow 0.5s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background-color: #333;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        button:active {
+            background-color: #555;
+            border-color: #4286f5;
+        }
+        .disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 410px;
+            height: 520px;
+            background-color: #333;
+            border: 2px solid white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: top 0.5s ease-in-out, transform 0.5s ease-in-out;
+            overflow-y: auto;
+        }
+        .modal.show {
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        .modal .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            height: 12px;
+            padding: 0;
+        }
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+
+        }
+        .modal-content label {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .modal-content input {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 80%;
+            border-radius: 5px;
+            border: none;
+
+        }
+        .modal-content button {
+            background-color: #000;
+            border: 1px solid #888;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            padding: 5px 20px;
+            width: 370px;
+            max-height: 30px;
+            transition: background-color 0.5s, border-color 0.5s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .modal-content button:hover {
+            background-color: #333;
+        }
+        .modal-content button:active {
+            background-color: #555;
+            border-color: #4286f5;
+        }
+        .modal::-webkit-scrollbar {
+            width: 8px;
+        }
+        .modal::-webkit-scrollbar-track {
+            background: #333;
+            border-radius: 10px;
+        }
+        .modal::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <button onclick="openModal('modal1')">Автомобіль</button>
+    <button onclick="openModal('modal2')">Дроби</button>
+    <button onclick="openModal('modal3')">Час</button>
+</div>
+
+<div id="modal1" class="modal">
+    <button class="close" onclick="closeModal('modal1')">&times;</button>
+    <div class="modal-content">
+        <label>Виробник: <span id="carManufacturer">Toyota</span></label>
+        <label>Модель: <span id="carModel">Camry</span></label>
+        <label>Рік випуску: <span id="carYear">2020</span></label>
+        <label>Середня швидкість (км/год): <span id="carSpeed">60</span></label>
+        <label>Введіть відстань (км):</label>
+        <input type="number" id="distanceInput" />
+        <button onclick="calculateCarTravelTime()">Розрахувати час подорожі</button>
+        <p id="carTravelTime"></p>
+    </div>
+</div>
+
+<div id="modal2" class="modal">
+    <button class="close" onclick="closeModal('modal2')">&times;</button>
+    <div class="modal-content">
+        <label>Дріб 1:</label>
+        <input type="number" id="numerator1" placeholder="Чисельник"/>
+        <input type="number" id="denominator1" placeholder="Знаменник"/>
+        <label>Дріб 2:</label>
+        <input type="number" id="numerator2" placeholder="Чисельник"/>
+        <input type="number" id="denominator2" placeholder="Знаменник"/>
+        <button onclick="performFractionOperation('add')">Додати</button>
+        <button onclick="performFractionOperation('subtract')">Відняти</button>
+        <button onclick="performFractionOperation('multiply')">Множити</button>
+        <button onclick="performFractionOperation('divide')">Ділити</button>
+        <p id="fractionResult"></p>
+    </div>
+</div>
+
+<div id="modal3" class="modal">
+    <button class="close" onclick="closeModal('modal3')">&times;</button>
+    <div class="modal-content">
+        <label>Поточний час: <span id="currentTime">12:12:49</span></label>
+        <label>Додати секунди:</label>
+        <input type="number" id="secondsInput" />
+        <button onclick="changeTimeBySeconds()">Змінити час (секунди)</button>
+        <label>Додати хвилини:</label>
+        <input type="number" id="minutesInput" />
+        <button onclick="changeTimeByMinutes()">Змінити час (хвилини)</button>
+        <label>Додати години:</label>
+        <input type="number" id="hoursInput" />
+        <button onclick="changeTimeByHours()">Змінити час (години)</button>
+        <p id="updatedTime"></p>
+    </div>
+</div>
+
+<script>
+    const car = {
+        manufacturer: "Toyota",
+        model: "Camry",
+        year: 2020,
+        averageSpeed: 60
+    };
+
+    const fraction1 = { numerator: 0, denominator: 1 };
+    const fraction2 = { numerator: 0, denominator: 1 };
+
+    const time = {
+        hours: 12,
+        minutes: 12,
+        seconds: 49
+    };
+
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.style.display = 'block';
+        setTimeout(() => {
+            modal.classList.add('show');
+            document.body.classList.add('blur');
+            disableButtons();
+        }, 10);
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.remove('show');
+        document.body.classList.remove('blur');
+        enableButtons();
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 500);
+    }
+
+    function disableButtons() {
+        const buttons = document.querySelectorAll('.container button');
+        buttons.forEach(button => {
+            button.classList.add('disabled');
+        });
+    }
+
+    function enableButtons() {
+        const buttons = document.querySelectorAll('.container button');
+        buttons.forEach(button => {
+            button.classList.remove('disabled');
+        });
+    }
+
+    function calculateCarTravelTime() {
+        const distance = document.getElementById('distanceInput').value;
+        if (isNaN(distance) || distance <= 0) {
+            document.getElementById('carTravelTime').innerText = 'Будь ласка, введіть коректну відстань.';
+            return;
+        }
+        const totalHours = distance / car.averageSpeed;
+        const breakHours = Math.floor(totalHours / 4);
+        const travelTime = totalHours + breakHours;
+        document.getElementById('carTravelTime').innerText = `Необхідний час для подолання ${distance} км: ${travelTime.toFixed(2)} годин (з урахуванням перерв)`;
+    }
+
+    function performFractionOperation(operation) {
+        fraction1.numerator = parseInt(document.getElementById('numerator1').value);
+        fraction1.denominator = parseInt(document.getElementById('denominator1').value);
+        fraction2.numerator = parseInt(document.getElementById('numerator2').value);
+        fraction2.denominator = parseInt(document.getElementById('denominator2').value);
+
+        if (isNaN(fraction1.numerator) || isNaN(fraction1.denominator) || isNaN(fraction2.numerator) || isNaN(fraction2.denominator)) {
+            document.getElementById('fractionResult').innerText = 'Будь ласка, введіть коректні значення для дробів.';
+            return;
+        }
+
+        let result;
+
+        switch(operation) {
+            case 'add':
+                result = addFractions(fraction1, fraction2);
+                break;
+            case 'subtract':
+                result = subtractFractions(fraction1, fraction2);
+                break;
+            case 'multiply':
+                result = multiplyFractions(fraction1, fraction2);
+                break;
+            case 'divide':
+                result = divideFractions(fraction1, fraction2);
+                break;
+        }
+
+        document.getElementById('fractionResult').innerText = `Результат: ${result.numerator}/${result.denominator}`;
+    }
+
+    function addFractions(frac1, frac2) {
+        const numerator = frac1.numerator * frac2.denominator + frac2.numerator * frac1.denominator;
+        const denominator = frac1.denominator * frac2.denominator;
+        return simplifyFraction({ numerator, denominator });
+    }
+
+    function subtractFractions(frac1, frac2) {
+        const numerator = frac1.numerator * frac2.denominator - frac2.numerator * frac1.denominator;
+        const denominator = frac1.denominator * frac2.denominator;
+        return simplifyFraction({ numerator, denominator });
+    }
+
+    function multiplyFractions(frac1, frac2) {
+        const numerator = frac1.numerator * frac2.numerator;
+        const denominator = frac1.denominator * frac2.denominator;
+        return simplifyFraction({ numerator, denominator });
+    }
+
+    function divideFractions(frac1, frac2) {
+        const numerator = frac1.numerator * frac2.denominator;
+        const denominator = frac1.denominator * frac2.numerator;
+        return simplifyFraction({ numerator, denominator });
+    }
+
+    function simplifyFraction(fraction) {
+        const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
+        const commonDivisor = gcd(fraction.numerator, fraction.denominator);
+        return {
+            numerator: fraction.numerator / commonDivisor,
+            denominator: fraction.denominator / commonDivisor
+        };
+    }
+
+    function changeTimeBySeconds() {
+        const seconds = parseInt(document.getElementById('secondsInput').value);
+        if (isNaN(seconds)) {
+            document.getElementById('updatedTime').innerText = 'Будь ласка, введіть коректне значення для секунд.';
+            return;
+        }
+        time.seconds += seconds;
+        normalizeTime();
+    }
+
+    function changeTimeByMinutes() {
+        const minutes = parseInt(document.getElementById('minutesInput').value);
+        if (isNaN(minutes)) {
+            document.getElementById('updatedTime').innerText = 'Будь ласка, введіть коректне значення для хвилин.';
+            return;
+        }
+        time.minutes += minutes;
+        normalizeTime();
+    }
+
+    function changeTimeByHours() {
+        const hours = parseInt(document.getElementById('hoursInput').value);
+        if (isNaN(hours)) {
+            document.getElementById('updatedTime').innerText = 'Будь ласка, введіть коректне значення для годин.';
+            return;
+        }
+        time.hours += hours;
+        normalizeTime();
+    }
+
+    function normalizeTime() {
+        if (time.seconds >= 60) {
+            time.minutes += Math.floor(time.seconds / 60);
+            time.seconds %= 60;
+        }
+        if (time.minutes >= 60) {
+            time.hours += Math.floor(time.minutes / 60);
+            time.minutes %= 60;
+        }
+        if (time.hours >= 24) {
+            time.hours %= 24;
+        }
+        document.getElementById('updatedTime').innerText = `Оновлений час: ${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}:${String(time.seconds).padStart(2, '0')}`;
+    }
+</script>
+</body>
+</html>
