@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: radial-gradient(circle, #303030, #000);
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        .search-container {
+            margin: 20px 0;
+            text-align: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .search-container input, .search-container select, .search-container button {
+            margin: 5px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+        .search-container button {
+            background-color: #000;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.5s, box-shadow 0.5s;
+        }
+        .search-container button:hover {
+            background-color: #333;
+        }
+        .search-container button:active {
+            background-color: #555;
+        }
+        .movie-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+            border: 1px solid #555;
+            border-radius: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .movie-box::-webkit-scrollbar {
+            width: 8px;
+        }
+        .movie-box::-webkit-scrollbar-track {
+            background: #333;
+            border-radius: 10px;
+        }
+        .movie-box::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+            border: 2px solid #fff;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            filter: none;
+            transition: filter 0.8s;
+        }
+        .blur .container {
+            filter: blur(5px);
+        }
+        .movie {
+            margin: 10px;
+            padding: 20px;
+            background-color: #444;
+            border-radius: 10px;
+            width: 180px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .movie img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .details-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #000;
+            border: 1px solid #fff;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.5s, border-color 0.5s;
+        }
+        .details-button:hover {
+            background-color: #333;
+            border-color: #888;
+        }
+        .details-button:active {
+            background-color: #555;
+            border-color: #aaa;
+        }
+        .pagination {
+            margin-top: 20px;
+            margin-bottom: 50px;
+        }
+        .pagination button {
+            margin-right: 5px;
+            padding: 10px;
+            background-color: #000;
+            border: 1px solid #888;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.5s, border-color 0.5s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .pagination button:hover {
+            background-color: #333;
+        }
+        .pagination button:active {
+            background-color: #555;
+            border-color: #4286f5;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background-color: #333;
+            border: 2px solid white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: top 0.5s ease-in-out, transform 0.5s ease-in-out;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .modal.show {
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        .modal .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            height: 24px;
+            padding: 0;
+        }
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .modal-content h2 {
+            margin: 10px 0;
+        }
+        .modal-content img {
+            width: 80%;
+            margin: 10px 0;
+        }
+        .modal-content p {
+            margin: 10px 0;
+        }
+        .modal::-webkit-scrollbar {
+            width: 8px;
+        }
+        .modal::-webkit-scrollbar-track {
+            background: #333;
+            border-radius: 10px;
+        }
+        .modal::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="content-wrapper">
+    <div class="search-container">
+        <form id="search-form">
+            <input type="text" id="movie-title" placeholder="Enter movie title" required>
+            <select id="type">
+                <option value="movie">Movie</option>
+                <option value="series">Series</option>
+                <option value="episode">Episode</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <div class="movie-box">
+        <div class="container" id="movies"></div>
+    </div>
+    <div class="pagination" id="pagination"></div>
+</div>
+<div id="movie-details" class="modal">
+    <button class="close" onclick="closeModal('movie-details')">&times;</button>
+    <div class="modal-content"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    const apiKey = 'Апішку сюди'; // <------ API ключ
+    let currentPage = 1;
+    let currentTitle = '';
+    let currentType = '';
+    let totalPages = 0;
+    const paginationLimit = 10;
+
+    $('#search-form').on('submit', function(e) {
+        e.preventDefault();
+        currentTitle = $('#movie-title').val();
+        currentType = $('#type').val();
+        currentPage = 1;
+        searchMovies(currentTitle, currentType, currentPage);
+    });
+
+    function searchMovies(title, type, page) {
+        $.ajax({
+            url: `http://www.omdbapi.com/?s=${title}&type=${type}&page=${page}&apikey=${apiKey}`,
+            method: 'GET',
+            success: function(data) {
+                displayMovies(data);
+            }
+        });
+    }
+
+    function displayMovies(data) {
+        $('#movies').empty();
+        $('#pagination').empty();
+        if (data.Response === 'True') {
+            data.Search.forEach(movie => {
+                $('#movies').append(`
+                        <div class="movie">
+                            <h3>${movie.Title} (${movie.Year})</h3>
+                            <img src="${movie.Poster}" alt="Poster" onerror="this.onerror=null;this.src='no-image.png';">
+                            <button class="details-button" onclick="getMovieDetails('${movie.imdbID}')">Details</button>
+                        </div>
+                    `);
+            });
+            totalPages = Math.ceil(data.totalResults / 10);
+            displayPagination();
+        } else {
+            $('#movies').append('<p>Movie not found!</p>');
+        }
+    }
+
+    function displayPagination() {
+        $('#pagination').empty();
+        const pageGroup = Math.floor((currentPage - 1) / paginationLimit);
+        const startPage = pageGroup * paginationLimit + 1;
+        const endPage = Math.min(startPage + paginationLimit - 1, totalPages);
+
+        if (startPage > 1) {
+            $('#pagination').append(`<button onclick="gotoPage(${startPage - 1})">Previous</button>`);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            const activeClass = i === currentPage ? 'active' : '';
+            $('#pagination').append(`<button class="${activeClass}" onclick="gotoPage(${i})">${i}</button>`);
+        }
+
+        if (endPage < totalPages) {
+            $('#pagination').append(`<button onclick="gotoPage(${endPage + 1})">Next</button>`);
+        }
+    }
+
+    function gotoPage(page) {
+        currentPage = page;
+        searchMovies(currentTitle, currentType, currentPage);
+    }
+
+    function getMovieDetails(id) {
+        $.ajax({
+            url: `http://www.omdbapi.com/?i=${id}&apikey=${apiKey}`,
+            method: 'GET',
+            success: function(data) {
+                displayMovieDetails(data);
+            }
+        });
+    }
+
+    function displayMovieDetails(movie) {
+        $('.modal-content').html(`
+                <h2>${movie.Title} (${movie.Year})</h2>
+                <img src="${movie.Poster}" alt="Poster" onerror="this.onerror=null;this.src='no-image.png';">
+                <p><strong>Director:</strong> ${movie.Director}</p>
+                <p><strong>Actors:</strong> ${movie.Actors}</p>
+                <p><strong>Plot:</strong> ${movie.Plot}</p>
+                <p><strong>Genre:</strong> ${movie.Genre}</p>
+                <p><strong>Runtime:</strong> ${movie.Runtime}</p>
+            `);
+        openModal('movie-details');
+    }
+
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.style.display = 'block';
+        setTimeout(() => {
+            modal.classList.add('show');
+            document.body.classList.add('blur');
+            disableButtons();
+        }, 10);
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.remove('show');
+        document.body.classList.remove('blur');
+        enableButtons();
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 500);
+    }
+
+    function disableButtons() {
+        const buttons = document.querySelectorAll('.container button');
+        buttons.forEach(button => {
+            button.classList.add('disabled');
+        });
+    }
+
+    function enableButtons() {
+        const buttons = document.querySelectorAll('.container button');
+        buttons.forEach(button => {
+            button.classList.remove('disabled');
+        });
+    }
+</script>
+</body>
+</html>
+
+
