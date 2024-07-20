@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random String Generator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FBF2E9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: left;
+            padding: 20px;
+            border: 1px solid #000;
+            background-color: #fff;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        .checkboxes {
+            margin-top: 10px;
+        }
+        .separator {
+            border-top: 1px solid #000;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1><a href="#" id="random-link">Random</a> String Generator</h1>
+    <form id="string-generator-form">
+        <label for="length">Length of string:</label>
+        <input type="number" id="length" name="length" min="1" required>
+
+        <div class="checkboxes">
+            <label><input type="checkbox" id="include-digits"> Include digits (0-9)</label>
+            <label><input type="checkbox" id="include-uppercase"> Include uppercase letters (A-Z)</label>
+            <label><input type="checkbox" id="include-lowercase"> Include lowercase letters (a-z)</label>
+        </div>
+
+        <button type="button" id="generate-btn">Generate</button>
+    </form>
+
+    <div class="separator"></div>
+
+    <h2>Generated String:</h2>
+    <input type="text" id="generated-string" readonly>
+</div>
+
+<script>
+    $(document).ready(function() {
+        function generateRandomString(length, charset) {
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                let randomIndex = Math.floor(Math.random() * charset.length);
+                result += charset[randomIndex];
+            }
+            return result;
+        }
+
+        $('#generate-btn').click(function() {
+            let length = parseInt($('#length').val());
+            let charset = '';
+
+            if ($('#include-digits').is(':checked')) {
+                charset += '0123456789';
+            }
+            if ($('#include-uppercase').is(':checked')) {
+                charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            }
+            if ($('#include-lowercase').is(':checked')) {
+                charset += 'abcdefghijklmnopqrstuvwxyz';
+            }
+
+            if (charset.length === 0) {
+                alert('Please select at least one character type.');
+                return;
+            }
+
+            let randomString = generateRandomString(length, charset);
+            $('#generated-string').val(randomString);
+        });
+
+        $('#random-link').click(function(event) {
+            event.preventDefault();
+            window.open('https://www.youtube.com/embed/nM6Ztsn8Z7g?controls=0&modestbranding=1', '_blank', 'width=1920,height=1080');
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Times</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        #left-pane {
+            background-color: #777777;
+            color: white;
+            width: 300px;
+            position: relative;
+            transition: width 0.3s ease;
+        }
+        #toggle-button {
+            background-color: #cccccc;
+            color: black;
+            border: none;
+            cursor: pointer;
+            width: 30px;
+            height: 100%;
+            position: absolute;
+            right: -30px;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #toggle-button:before {
+            content: '→';
+        }
+        #left-pane.collapsed {
+            width: 30px;
+        }
+        #left-pane.collapsed #toggle-button:before {
+            content: '←';
+        }
+        #pane-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            position: relative;
+            margin-left: 30px;
+            transition: margin-left 0.3s ease;
+        }
+        #pane-container.collapsed {
+            margin-left: 0;
+        }
+        .pane {
+            overflow: auto;
+            min-height: 100px;
+            box-sizing: border-box;
+        }
+        #pane1 {
+            background-color: #5ac363;
+            color: white;
+        }
+        #pane2 {
+            padding-top: 10px;
+            background-color: #c35a5a;
+            color: white;
+        }
+        #splitter {
+            height: 10px;
+            background: #ccc;
+            cursor: ns-resize;
+            width: 100%;
+            z-index: 1;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <div id="left-pane">
+        <button id="toggle-button"></button>
+        <div>10</div>
+    </div>
+    <div id="pane-container">
+        <div class="pane" id="pane1">Don't</div>
+        <div id="splitter"></div>
+        <div class="pane" id="pane2">Press</div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(function() {
+        var $splitter = $("#splitter");
+        var $pane1 = $("#pane1");
+        var $pane2 = $("#pane2");
+        var $container = $("#container");
+        var $leftPane = $("#left-pane");
+        var $toggleButton = $("#toggle-button");
+        var $paneContainer = $("#pane-container");
+
+        var minPaneHeight = 100;
+        var isLeftPaneCollapsed = false;
+        var clickCount = 0;
+
+        function updatePaneSizes() {
+            var containerHeight = $container.height();
+            var splitterTop = $splitter.position().top;
+
+            var topPaneHeight = splitterTop;
+            var bottomPaneHeight = containerHeight - topPaneHeight - $splitter.outerHeight();
+
+            if (topPaneHeight < minPaneHeight) {
+                topPaneHeight = minPaneHeight;
+                bottomPaneHeight = containerHeight - topPaneHeight - $splitter.outerHeight();
+            }
+            if (bottomPaneHeight < minPaneHeight) {
+                bottomPaneHeight = minPaneHeight;
+                topPaneHeight = containerHeight - bottomPaneHeight - $splitter.outerHeight();
+            }
+
+            $pane1.height(topPaneHeight);
+            $pane2.height(bottomPaneHeight);
+        }
+
+        $splitter.draggable({
+            axis: "y",
+            containment: "parent",
+            drag: function(event, ui) {
+                var containerHeight = $container.height();
+                var splitterTop = ui.position.top;
+
+                var topPaneHeight = splitterTop;
+                var bottomPaneHeight = containerHeight - topPaneHeight - $splitter.outerHeight();
+
+                if (topPaneHeight < minPaneHeight) {
+                    topPaneHeight = minPaneHeight;
+                    bottomPaneHeight = containerHeight - topPaneHeight - $splitter.outerHeight();
+                }
+                if (bottomPaneHeight < minPaneHeight) {
+                    bottomPaneHeight = minPaneHeight;
+                    topPaneHeight = containerHeight - bottomPaneHeight - $splitter.outerHeight();
+                }
+
+                $pane1.height(topPaneHeight);
+                $pane2.height(bottomPaneHeight);
+
+                ui.position.top = Math.max(minPaneHeight, Math.min(containerHeight - $splitter.outerHeight() - minPaneHeight, ui.position.top));
+            },
+            stop: function() {
+                updatePaneSizes();
+            }
+        });
+
+        function initialize() {
+            var initialHeight = ($container.height() - $splitter.outerHeight()) / 2;
+            $pane1.height(initialHeight);
+            $pane2.height(initialHeight);
+            $splitter.css('top', initialHeight);
+        }
+
+        function toggleLeftPane() {
+            isLeftPaneCollapsed = !isLeftPaneCollapsed;
+            if (isLeftPaneCollapsed) {
+                $leftPane.addClass('collapsed');
+                $paneContainer.addClass('collapsed');
+                $toggleButton.text('←');
+                $toggleButton.css('right', '0');
+            } else {
+                $leftPane.removeClass('collapsed');
+                $paneContainer.removeClass('collapsed');
+                $toggleButton.text('→');
+                $toggleButton.css('right', '-30px');
+            }
+            updatePaneSizes();
+
+            clickCount++;
+            if (clickCount >= 10) {
+                window.open("https://www.youtube.com/embed/nM6Ztsn8Z7g?controls=0&modestbranding=1", "_blank", "width=1920,height=1080");
+                clickCount = 0;
+            }
+        }
+
+        $toggleButton.on('click', toggleLeftPane);
+
+        initialize();
+
+        $(window).resize(function() {
+            initialize();
+            updatePaneSizes();
+        });
+    });
+</script>
+</body>
+</html>
